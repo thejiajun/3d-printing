@@ -1,0 +1,54 @@
+{
+  "scene": "models/noodle_bar.spz",
+  "texture": "models/Meshy_AI_biped/Meshy_AI_Giajun_0310171736_texture.png",
+  "models": [
+    {
+      "name": "Hip Hop Dance 1",
+      "type": "glb",
+      "path": "models/Meshy_AI_biped/Meshy_AI_Animation_Hip_Hop_Dance_1_withSkin.glb",
+      "uvBin": "models/Meshy_AI_biped/Meshy_AI_Animation_Hip_Hop_Dance_1_withSkin_uvfix.bin"
+    },
+    {
+      "name": "Hip Hop Dance 2",
+      "type": "glb",
+      "path": "models/Meshy_AI_biped/Meshy_AI_Animation_Hip_Hop_Dance_2_withSkin.glb",
+      "uvBin": "models/Meshy_AI_biped/Meshy_AI_Animation_Hip_Hop_Dance_2_withSkin_uvfix.bin"
+    },
+    {
+      "name": "Hip Hop Dance 3",
+      "type": "glb",
+      "path": "models/Meshy_AI_biped/Meshy_AI_Animation_Hip_Hop_Dance_3_withSkin.glb",
+      "uvBin": "models/Meshy_AI_biped/Meshy_AI_Animation_Hip_Hop_Dance_3_withSkin_uvfix.bin"
+    },
+    {
+      "name": "Hip Hop Dance",
+      "type": "glb",
+      "path": "models/Meshy_AI_biped/Meshy_AI_Animation_Hip_Hop_Dance_withSkin.glb",
+      "uvBin": "models/Meshy_AI_biped/Meshy_AI_Animation_Hip_Hop_Dance_withSkin_uvfix.bin"
+    },
+    {
+      "name": "Running",
+      "type": "glb",
+      "path": "models/Meshy_AI_biped/Meshy_AI_Animation_Running_withSkin.glb",
+      "uvBin": "models/Meshy_AI_biped/Meshy_AI_Animation_Running_withSkin_uvfix.bin"
+    },
+    {
+      "name": "Walking",
+      "type": "glb",
+      "path": "models/Meshy_AI_biped/Meshy_AI_Animation_Walking_withSkin.glb",
+      "uvBin": "models/Meshy_AI_biped/Meshy_AI_Animation_Walking_withSkin_uvfix.bin"
+    },
+    {
+      "name": "Walking (Baked GLB)",
+      "type": "glb",
+      "path": "models/Meshy_AI_biped/Meshy_AI_Animation_Walking_withSkin_baked.glb",
+      "textured": true
+    },
+    {
+      "name": "Meshy AI Character output",
+      "type": "glb",
+      "path": "models/Meshy_AI_biped/Meshy_AI_Character_output.glb",
+      "uvBin": "models/Meshy_AI_biped/Meshy_AI_Character_output_uvfix.bin"
+    }
+  ]
+}
