@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "print-library",
+  // Personal account; auth via `wrangler auth activate personal` on the repo root.
+  "account_id": "bc5e809309cd5e16a63b05b88d87fcb1",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-01",
+  "routes": [{ "pattern": "print.jiajun.site", "custom_domain": true }],
+  "workers_dev": false,
+  "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": ["/data/*"] },
+  "r2_buckets": [{ "binding": "LIBRARY", "bucket_name": "print-library" }]
+}

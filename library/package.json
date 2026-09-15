@@ -1,0 +1,28 @@
+{
+  "name": "print-library",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "bambu:login": "node scripts/bambu-sync.mjs login",
+    "bambu:sync": "node scripts/bambu-sync.mjs tasks",
+    "catalog": "node scripts/build-catalog.mjs",
+    "upload": "node scripts/upload-r2.mjs",
+    "deploy": "vite build && wrangler deploy",
+    "sync": "npm run bambu:sync && npm run catalog && npm run upload"
+  },
+  "type": "module",
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.0",
+    "@gltf-transform/extensions": "^4.5.0",
+    "@gltf-transform/functions": "^4.5.0",
+    "fflate": "^0.8.3",
+    "meshoptimizer": "^1.2.0",
+    "three": "^0.186.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.0",
+    "wrangler": "^4.131.2"
+  },
+  "private": true
+}
