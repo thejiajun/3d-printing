@@ -31,8 +31,8 @@ npm run sync      # 拉拓竹打印记录 → 生成目录 → 上传新文件�
 
 - `npm run upload` 会把整个 `models/`（含 scad/blend 源文件）镜像到 R2 的 `private/backup/`，只传有变化的文件
 - 访客只能下载「自己设计」和 CC 授权的原文件；Standard Digital File License 的模型只跳转 MakerWorld
-- 首页底部「登录」：密码在 1Password Personal「print.jiajun.site 登录」。登录后所有模型都能下载（从备份取），有效期 90 天
-- 改密码：在 1Password 改完后执行 `op item get "print.jiajun.site 登录" --vault Personal --fields password --reveal | tr -d '\n' | npx wrangler secret put OWNER_PASSWORD`，旧的登录状态会同时失效
+- 首页底部「登录」走 Cloudflare Access（邮箱验证码），登录后所有模型都能下载（从备份取）
+- Access 设置（个人账号 Zero Trust）：Self-hosted 应用，域名 `print.jiajun.site`，路径 `owner` 和 `data/private` 两条，策略 Allow 邮箱 presjch@gmail.com，登录方式 One-time PIN。把 team domain（`xxx.cloudflareaccess.com`）和应用的 AUD 填进 `wrangler.jsonc` 的 `vars` 后 `npm run deploy`
 
 ## 本地开发
 

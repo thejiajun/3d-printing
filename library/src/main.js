@@ -51,39 +51,11 @@ function renderList() {
     </nav>
     <main class="grid"></main>
     <footer class="foot">
-      ${state.owner ? `已登录 · <button class="link logout">退出</button>` : `
-        <details class="login">
-          <summary>登录</summary>
-          <form>
-            <input type="password" name="password" placeholder="密码" autocomplete="current-password" required>
-            <button class="ghost">登录</button>
-            <span class="login-error" hidden>密码不对</span>
-          </form>
-        </details>`}
+      ${state.owner
+        ? `已登录 · <a class="link" href="/owner/logout">退出</a>`
+        : `<a class="link" href="/owner/login?back=${encodeURIComponent(location.pathname + location.hash)}">登录</a>`}
     </footer>`;
 
-  app.querySelector('.login form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const res = await fetch('/api/login', {
-      method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ password: e.target.password.value }),
-    }).catch(() => null);
-    state.owner = Boolean(res?.ok);
-    if (state.owner) renderList();
-    else app.querySelector('.login-error').hidden = false;
-  });
-  app.querySelector('.logout')?.addEventListener('click', async () => {
-    await fetch('/api/logout', { method: 'POST' });
-    state.owner = false;
-    renderList();
-  });
-
-  app.querySelector('.search').addEventListener('input', (e) => { state.query = e.target.value; renderCards(); });
-  app.querySelectorAll('.chip').forEach((b) => b.addEventListener('click', () => {
-    state.filter = b.dataset.filter;
-    app.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', c === b));
-    renderCards();
-  }));
   renderCards();
 }
 

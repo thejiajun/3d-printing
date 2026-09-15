@@ -85,12 +85,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .note { flex-basis: 100%; margin: 4px 0 0; font-size: 13px; }
 .button.secondary { background: transparent; color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 .foot { margin-top: 48px; font-size: 13px; color: var(--muted); display: flex; justify-content: center; }
-.link { background: none; border: 0; padding: 0; color: var(--accent); font-size: inherit; }
-.login summary { cursor: pointer; list-style: none; text-align: center; }
-.login summary::-webkit-details-marker { display: none; }
-.login form { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
-.login input { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font: inherit; }
-.login-error { color: var(--warn); }
+.link { color: var(--accent); text-decoration: none; }
 .info h3 { margin: 28px 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .count { font-weight: 400; }
 .muted { color: var(--muted); font-size: 14px; }
