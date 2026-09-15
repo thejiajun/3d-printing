@@ -3,13 +3,15 @@ import { createViewer, snapshot } from './viewer.js';
 
 const DATA = import.meta.env.VITE_DATA_BASE ?? '/data';
 const app = document.querySelector('#app');
-const state = { catalog: null, filter: 'all', query: '', viewer: null };
+const state = { catalog: null, filter: 'all', query: '', viewer: null, owner: false };
 
 const SOURCE_LABEL = { original: '自己设计', download: '下载的', cloud: '仅打印记录' };
 const FILTERS = [['all', '全部'], ['original', '自己设计'], ['download', '下载的'], ['cloud', '仅打印记录']];
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-const asset = (key) => (/^https?:/.test(key) ? key : `${DATA}/${key}`);
+const asset = (key) => (/^https?:/.test(key) ? key : `${DATA}/${key.split('/').map(encodeURIComponent).join('/')}`);
+// Public copy when the license allows sharing; otherwise the owner-only backup (if signed in).
+const downloadKey = (p, v) => (p.downloadable ? v.file : state.owner ? v.backup : null);
 const dateFmt = new Intl.DateTimeFormat('zh-CN', { timeZone: 'America/Los_Angeles', year: 'numeric', month: 'short', day: 'numeric' });
 const fmtDate = (iso) => (iso ? dateFmt.format(new Date(iso)) : '—');
 const fmtDuration = (sec) => {
@@ -47,7 +49,34 @@ function renderList() {
       ${FILTERS.filter(([k]) => k === 'all' || projects.some((p) => p.source === k)).map(([k, label]) => `
         <button class="chip" aria-pressed="${state.filter === k}" data-filter="${k}">${label}</button>`).join('')}
     </nav>
-    <main class="grid"></main>`;
+    <main class="grid"></main>
+    <footer class="foot">
+      ${state.owner ? `已登录 · <button class="link logout">退出</button>` : `
+        <details class="login">
+          <summary>登录</summary>
+          <form>
+            <input type="password" name="password" placeholder="密码" autocomplete="current-password" required>
+            <button class="ghost">登录</button>
+            <span class="login-error" hidden>密码不对</span>
+          </form>
+        </details>`}
+    </footer>`;
+
+  app.querySelector('.login form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const res = await fetch('/api/login', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ password: e.target.password.value }),
+    }).catch(() => null);
+    state.owner = Boolean(res?.ok);
+    if (state.owner) renderList();
+    else app.querySelector('.login-error').hidden = false;
+  });
+  app.querySelector('.logout')?.addEventListener('click', async () => {
+    await fetch('/api/logout', { method: 'POST' });
+    state.owner = false;
+    renderList();
+  });
 
   app.querySelector('.search').addEventListener('input', (e) => { state.query = e.target.value; renderCards(); });
   app.querySelectorAll('.chip').forEach((b) => b.addEventListener('click', () => {
@@ -137,10 +166,10 @@ function renderDetail(id, versionHash) {
             ${p.sourceUrl ? `<br><a href="${esc(p.sourceUrl)}" target="_blank" rel="noopener">MakerWorld 原页面 ↗</a>` : ''}
           </p>` : ''}
         <div class="actions">
-          ${version?.file ? `<a class="button download" href="${esc(asset(version.file))}" download>下载 ${version.format.toUpperCase()}</a>` : ''}
+          ${version && downloadKey(p, version) ? `<a class="button download" href="${esc(asset(downloadKey(p, version)))}" download>下载 ${version.format.toUpperCase()}</a>` : ''}
           ${!p.downloadable && p.sourceUrl ? `
-            <a class="button" href="${esc(p.sourceUrl)}" target="_blank" rel="noopener">到 MakerWorld 下载 ↗</a>
-            <p class="muted note">原作者的授权不允许转发文件，请到原页面下载</p>` : ''}
+            <a class="button ${state.owner ? 'secondary' : ''}" href="${esc(p.sourceUrl)}" target="_blank" rel="noopener">到 MakerWorld 下载 ↗</a>
+            <p class="muted note">${state.owner ? '原作者的授权不允许转发，下载按钮只有登录后的你能看到' : '原作者的授权不允许转发文件，请到原页面下载'}</p>` : ''}
         </div>
 
         ${p.versions.length > 1 ? `
@@ -180,7 +209,7 @@ async function selectVersion(p, version) {
   app.querySelector('.file code').textContent = version.path;
   const download = app.querySelector('.download');
   if (download) {
-    download.href = asset(version.file);
+    download.href = asset(downloadKey(p, version));
     download.textContent = `下载 ${version.format.toUpperCase()}`;
   }
   const stageEl = app.querySelector('.stage');
@@ -216,6 +245,7 @@ async function boot() {
     const res = await fetch(`${DATA}/catalog.json`, { cache: 'no-cache' });
     if (!res.ok) throw new Error(res.status);
     state.catalog = await res.json();
+    state.owner = await fetch('/api/me').then((r) => r.json()).then((d) => d.owner === true).catch(() => false);
   } catch {
     app.innerHTML = '<p class="empty">目录还没生成。先运行 <code>npm run catalog</code>。</p>';
     return;

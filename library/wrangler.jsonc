@@ -7,6 +7,6 @@
   "compatibility_date": "2026-09-01",
   "routes": [{ "pattern": "print.jiajun.site", "custom_domain": true }],
   "workers_dev": false,
-  "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": ["/data/*"] },
+  "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": ["/data/*", "/api/*"] },
   "r2_buckets": [{ "binding": "LIBRARY", "bucket_name": "print-library" }]
 }

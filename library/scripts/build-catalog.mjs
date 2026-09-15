@@ -117,6 +117,8 @@ for (const g of groups) {
       path: relative(resolve(ROOT, '..'), file),
       format,
       file: `files/${info.hash}.${format}`,
+      // Owner-only mirror of the original, uploaded by upload-r2.mjs.
+      backup: `private/backup/${relative(resolve(ROOT, '..'), file)}`,
       fileName: basename(file),
       updatedAt: statSync(file).mtime.toISOString(),
       ...info,

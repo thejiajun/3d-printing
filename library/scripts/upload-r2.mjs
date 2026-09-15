@@ -1,8 +1,9 @@
 // Push data/ to the R2 bucket. Assets are content-addressed, so only new files are uploaded;
 // catalog.json is always re-uploaded. Auth comes from the wrangler profile bound to this repo.
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -33,5 +34,21 @@ for (const [i, key] of todo.entries()) {
   writeFileSync(MANIFEST, JSON.stringify([...uploaded]));
   process.stdout.write(`\r${i + 1}/${todo.length}`);
 }
+// Owner-only backup: mirror every file under ../models (sources included), skipping unchanged ones.
+const REPO = resolve(ROOT, '..');
+const BACKUP_MANIFEST = join(DATA, '.backup.json');
+const backedUp = existsSync(BACKUP_MANIFEST) ? JSON.parse(readFileSync(BACKUP_MANIFEST, 'utf8')) : {};
+const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((d) =>
+  d.name.startsWith('.') ? [] : d.isDirectory() ? walk(join(dir, d.name)) : [join(dir, d.name)]);
+const changed = walk(join(REPO, 'models')).map((f) => [relative(REPO, f), f])
+  .filter(([rel, f]) => backedUp[rel] !== createHash('sha1').update(readFileSync(f)).digest('hex'));
+console.log(`\n${changed.length} files to back up`);
+for (const [i, [rel, f]] of changed.entries()) {
+  put(`private/backup/${rel}`, f, basename(f));
+  backedUp[rel] = createHash('sha1').update(readFileSync(f)).digest('hex');
+  writeFileSync(BACKUP_MANIFEST, JSON.stringify(backedUp, null, 2));
+  process.stdout.write(`\r${i + 1}/${changed.length}`);
+}
+
 put('catalog.json', join(DATA, 'catalog.json'));
 console.log('\ncatalog.json uploaded');
