@@ -3,3 +3,7 @@
 *.swo
 *~
 tools/mesh-venv/
+*.blend1
+.playwright-mcp/
+models/**/result.json
+.wrangler/

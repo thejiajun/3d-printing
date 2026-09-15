@@ -21,7 +21,7 @@ body_d = m5_af / cos(30) + wall_min * 2;  // auto-sized from hex + wall
 body_h = m5_depth_bottom + m5_depth_top + 3; // +3mm solid middle section
 
 // Lid to cover grinder opening (prevent beans from spilling)
-lid_d = 50;            // 5cm diameter
+lid_d = 35;            // 3.5cm diameter
 lid_h = 1.2;           // thinner lid
 
 module hex(af, h) {
