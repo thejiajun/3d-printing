@@ -9,6 +9,9 @@
   "workers_dev": false,
   "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": ["/data/*", "/api/*", "/owner/*"] },
   // Cloudflare Access app protecting /owner/* and /data/private/* (see README).
-  "vars": { "ACCESS_TEAM_DOMAIN": "", "ACCESS_AUD": "" },
+  "vars": {
+    "ACCESS_TEAM_DOMAIN": "thejiajun.cloudflareaccess.com",
+    "ACCESS_AUD": "5f61e918cbdddc9cb703f904a8855c8024d77dc3d7302ac0d1614f110bfbd8f3"
+  },
   "r2_buckets": [{ "binding": "LIBRARY", "bucket_name": "print-library" }]
 }

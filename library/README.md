@@ -34,6 +34,10 @@ npm run sync      # 拉拓竹打印记录 → 生成目录 → 上传新文件�
 - 首页底部「登录」走 Cloudflare Access（邮箱验证码），登录后所有模型都能下载（从备份取）
 - Access 设置（个人账号 Zero Trust）：Self-hosted 应用，域名 `print.jiajun.site`，路径 `owner` 和 `data/private` 两条，策略 Allow 邮箱 presjch@gmail.com，登录方式 One-time PIN。把 team domain（`xxx.cloudflareaccess.com`）和应用的 AUD 填进 `wrangler.jsonc` 的 `vars` 后 `npm run deploy`
 
+## 部署
+
+推送 `library/**` 或部署工作流的变更到 `main` 后，GitHub Actions 会自动运行 `npm ci` 和 `npm run deploy`。仓库需要配置 Actions Secret `CLOUDFLARE_API_TOKEN`；Token 仅需个人账号的 Workers Scripts 编辑权限，以及 `jiajun.site` 的 Workers Routes 编辑权限。
+
 ## 本地开发
 
 ```bash

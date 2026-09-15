@@ -1,0 +1,43 @@
+name: Deploy print library
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "library/**"
+      - ".github/workflows/deploy-print-library.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-print-library-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: library
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: library/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and deploy
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: bc5e809309cd5e16a63b05b88d87fcb1
